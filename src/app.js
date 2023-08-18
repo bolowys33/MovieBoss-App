@@ -47,6 +47,7 @@ function displayPage() {
         commentBtn.style.cursor = `pointer`;
         likeBtn.innerHTML = `<i class="fa fa-heart"></i>`;
         likeBtn.style.cursor = `pointer`;
+        commentText.style.cursor = `pointer`;
         likeBtn.style.marginRight = `10px`;
 
         commentBtn.innerHTML = `<i class="fa-solid fa-comment"></i>`;
@@ -97,11 +98,11 @@ function displayPage() {
         async function getComment() {
             try {
                 const response = await fetch(
-                    `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/EI8oCHzs7PU6cr94kJaj/comments?item_id=${id}`
+                    `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/HaCdQ34dOonmLe1cXdyj/comments?item_id=${id}`
                 );
                 const data = await response.json();
                 if (data.length === undefined) {
-                    commentText.innerText = `No comments`;
+                    commentText.innerText = `0 comments`;
                 } else if (data.length === 1) {
                     commentText.innerText = `1 comment`;
                 } else {
@@ -128,6 +129,9 @@ function displayPage() {
         commentBtn.addEventListener("click", () => {
             showMoviePopup(movie, id);
         });
+        commentText.addEventListener("click", () => {
+            showMoviePopup(movie, id);
+        });
 
         likeBtn.addEventListener(
             "click",
@@ -136,7 +140,7 @@ function displayPage() {
 
                 async function addlike() {
                     await fetch(
-                        `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/EI8oCHzs7PU6cr94kJaj/likes`,
+                        `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/HaCdQ34dOonmLe1cXdyj/likes`,
                         {
                             method: "POST",
                             body: JSON.stringify({
@@ -157,7 +161,7 @@ function displayPage() {
 
         async function getLikes() {
             const response = await fetch(
-                `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/EI8oCHzs7PU6cr94kJaj/likes`
+                `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/HaCdQ34dOonmLe1cXdyj/likes`
             );
             const data = await response.json();
             showLikes(data);
@@ -319,7 +323,7 @@ function showMoviePopup(movie, id) {
 
             try {
                 const response = await fetch(
-                    `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/EI8oCHzs7PU6cr94kJaj/comments`,
+                    `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/HaCdQ34dOonmLe1cXdyj/comments`,
                     {
                         method: "POST",
                         headers: {
@@ -350,7 +354,7 @@ function showMoviePopup(movie, id) {
     async function getComments() {
         try {
             const response = await fetch(
-                `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/EI8oCHzs7PU6cr94kJaj/comments?item_id=${movieId}`
+                `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/HaCdQ34dOonmLe1cXdyj/comments?item_id=${movieId}`
             );
             const comData = await response.json();
             showComments(comData);
