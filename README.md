@@ -11,7 +11,7 @@
 
 ## Live Site
 
- Click [Here](https://promzzykoncepts.github.io/PranMovies/) to view live site
+ Click [Here](https://bolowys33.github.io/MovieBoss-App/) to view live site
 
 ## Acknowledgement
 
