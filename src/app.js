@@ -25,6 +25,16 @@ function displayPage() {
         let thumbnail = document.createElement(`img`);
         let movieCardBody = document.createElement(`div`);
         let title = document.createElement(`h3`);
+        let buttonDiv = document.createElement(`div`);
+        let likeDiv = document.createElement("div");
+        let likeBtn = document.createElement(`span`);
+        let likeText = document.createElement("span");
+        let commentDiv = document.createElement("div");
+        let commentBtn = document.createElement("span");
+        let commentText = document.createElement("span");
+        let ratingDiv = document.createElement("div");
+        ratingDiv.style.textAlign = `center`;
+        ratingDiv.style.marginBottom = `10px`;
 
         let id = `item${movie.id}`;
 
@@ -34,13 +44,165 @@ function displayPage() {
         movieCardBody.className = `card-body`;
         title.className = `card-title text-center`;
         title.style.cursor = `pointer`;
+        commentBtn.style.cursor = `pointer`;
+        likeBtn.innerHTML = `<i class="fa fa-heart"></i>`;
+        likeBtn.style.cursor = `pointer`;
+        likeBtn.style.marginRight = `10px`;
+
+        commentBtn.innerHTML = `<i class="fa-solid fa-comment"></i>`;
+        commentBtn.style.marginRight = `10px`;
+
+        commentText.innerText = `0 comments`;
+
+        commentDiv.append(commentBtn, commentText);
+        likeDiv.append(likeBtn, likeText);
+
+        buttonDiv.append(likeDiv, commentDiv);
+        buttonDiv.style.display = `flex`;
+        buttonDiv.style.justifyContent = ` space-around`;
 
         thumbnail.src = movie.image.medium;
         title.textContent = movie.name;
 
         movieCard.append(thumbnail, title, ratingDiv, buttonDiv);
         container.append(movieCard);
+
+        function ratingConv() {
+            let rating = (movie.rating.average / 10) * 5;
+            showRating(rating);
+        }
+
+        function showRating(rating) {
+            if (rating === 1) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star"></i>`;
+            } else if (rating > 1 && rating < 2) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star-half-stroke" style="color: #ffd700;"></i><i class="fa-regular fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i>`;
+            } else if (rating === 2) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star"></i><i class="fa-regular fa-star" style="color: #ffd700;"></i><i class="fa-regular fa-star" style="color: #ffd700;"></i>`;
+            } else if (rating > 2 && rating < 3) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i></i><i class="fa-solid fa-star-half-stroke" style="color: #ffd700;"></i><i class="fa-regular fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i>`;
+            } else if (rating === 3) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-solid fa-star"></i><i class="fa-regular fa-star" style="color: #ffd700;"></i><i class="fa-regular fa-star" style="color: #ffd700;"></i>`;
+            } else if (rating > 3 && rating < 4) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i></i><i class="fa-solid fa-star-half-stroke" style="color: #ffd700;"></i><i class="fa-regular fa-star" style="color: #ffd700;"></i>`;
+            } else if (rating === 4) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-regular fa-star" style="color: #ffd700;"></i>`;
+            } else if (rating > 4 && rating < 5) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i></i><i class="fa-solid fa-star-half-stroke" style="color: #ffd700;"></i>`;
+            } else if (rating === 5) {
+                ratingDiv.innerHTML = `<i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i><i class="fa-solid fa-star" style="color: #ffd700;"></i>`;
+            }
+        }
+
+        async function getComment() {
+            try {
+                const response = await fetch(
+                    `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/EI8oCHzs7PU6cr94kJaj/comments?item_id=${id}`
+                );
+                const data = await response.json();
+                if (data.length === undefined) {
+                    commentText.innerText = `No comments`;
+                } else if (data.length === 1) {
+                    commentText.innerText = `1 comment`;
+                } else {
+                    commentText.innerText = `${data.length} comments`;
+                }
+            } catch (error) {
+                console.error(
+                    "An error occurred while fetching comments:",
+                    error
+                );
+            }
+        }
+
+        ratingConv();
+        getLikes();
+        getComment();
+
+        thumbnail.addEventListener("click", () => {
+            showMoviePopup(movie, id);
+        });
+        title.addEventListener("click", () => {
+            showMoviePopup(movie, id);
+        });
+        commentBtn.addEventListener("click", () => {
+            showMoviePopup(movie, id);
+        });
+
+        likeBtn.addEventListener(
+            "click",
+            function () {
+                likeBtn.style.color = `red`;
+
+                async function addlike() {
+                    await fetch(
+                        `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/EI8oCHzs7PU6cr94kJaj/likes`,
+                        {
+                            method: "POST",
+                            body: JSON.stringify({
+                                item_id: id,
+                            }),
+                            headers: {
+                                "Content-type": "application/json",
+                            },
+                        }
+                    );
+
+                    getLikes();
+                }
+                addlike();
+            },
+            { once: true }
+        );
+
+        async function getLikes() {
+            const response = await fetch(
+                `https://us-central1-involvement-api.cloudfunctions.net/capstoneApi/apps/EI8oCHzs7PU6cr94kJaj/likes`
+            );
+            const data = await response.json();
+            showLikes(data);
+        }
+
+        likeText.innerText = `0 likes`;
+
+        function showLikes(data) {
+            const likesArr = data.filter((like) => like.item_id === id);
+
+            if (likesArr[0].likes === 1) {
+                likeText.innerText = `${likesArr[0].likes} like`;
+            } else {
+                likeText.innerText = `${likesArr[0].likes} likes`;
+            }
+        }
+
+        container.append(movieCard);
     });
+}
+
+function prevPage() {
+    currentPage--;
+    showPage();
+}
+
+function nextPage() {
+    currentPage++;
+    showPage();
+}
+
+function showPage() {
+    const prevBtn = document.getElementById("prevButton");
+    const nextBtn = document.getElementById("nextButton");
+    const pageNum = document.getElementById("pageNumber");
+    pageNum.textContent = currentPage;
+
+    prevBtn.hidden = currentPage === 1;
+    nextBtn.hidden =
+        currentPage === Math.ceil(moviesData.length / itemsPerPage);
+
+    nextBtn.addEventListener("click", nextPage);
+    prevBtn.addEventListener("click", prevPage);
+
+    displayPage();
 }
 
 function showMoviePopup(movie, id) {
