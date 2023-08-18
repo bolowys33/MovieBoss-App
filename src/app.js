@@ -421,3 +421,5 @@ function showMoviePopup(movie, id) {
         }
     });
 }
+
+window.addEventListener("DOMContentLoaded", getMovies);
